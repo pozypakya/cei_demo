@@ -1,0 +1,42 @@
+Battery.Name,Cont.Discharge,Max.Discharge,C Rating,Safe.Ohm
+AW 14500 600 mah,4.8 amp,6 amp,8c,0.9 ohm
+AW 16340 550 mah,4.4 amps,5.5 amp,8c,1 ohm
+AW 18350  700 mah,6.4 amp,7 amp,8c,0.7 ohm
+AW 18490  1100 mah,8.8 amp,11 amp,8c,0.5 ohm
+AW 18650 1600 mah,16 amp,24 amp,15c,0.3 ohm
+AW 18650 2000 mah,7.5 amp,10 amp,5c,0.5 ohm
+Efest 10440 350 mah,1.4 amp,3 amp,8c,3 ohm
+Efest 14500 700 mah,5.6 amp,7 amp,8c,0.8 ohm
+Efest 16340 700 mah,5.6 amp,7 amp,8c,0.8 ohm
+Efest 18350 800 mah,6.4 amp,8 amp,8c,0.7 ohm
+Efest 18490 1100 mah,8.8 amp,11 amp,8c,0.5 ohm
+Efest 18650 1600 mah,20 amp,30 amp,18.75c,0.3 ohm
+Efest 18650 2000 mah,15 amp,20 amp,8c,0.4 ohm
+Efest 18650 2250 mah,18 amp,20 amp,8c,0.5 ohm
+Efest 26500 3000 mah,20 amp,30 amp,6.5c,0.5 ohm
+Efest 26650 3000 mah,20 amp,30 amp,6.5c,0.5 ohm
+EH 14500 600 mah,4.8 amp,6 amp,8c,0.9 ohm
+EH 15270 400 mah,3.2 amp,4 amp,8c,1.4 ohm
+EH 18350 800 mah,6.4 amp,8 amp,8c,0.7 ohm
+EH 18500 1100 mah,8.8 amp,11 amp,8c,0.5 ohm
+EH 18650 2000 mah,16 amp,20 amp,8c,0.4 ohm
+EH 18650 NP 1600 mah,20 amp,30 amp,18.75 c,0.3 ohm
+MNKE 18650,20 amp,30 amp,18.75c,0.3 ohm
+MNKE 26650,20 amp,30 amp (60 amp pulse),18.75c,0.3 ohm
+Samsung ICR18650-22P 2200 mah,5 amp,10 amp,4.5c,0.9 ohm
+Samsung ICR18650- 30A 3000 mah,2.4 amp,5.9 amp,1c,1.5 ohm
+Samsung INR18650-20R 2000 mah,7.5 amp,15 amp,7c,0.6 ohm
+Sony US18650v3 2150 mah,5 amp,10 amp,4.5c,0.9 ohm
+Sony US18650VTC3 1600 mah,15 amp,30 amp,18.75c,0.3 ohm
+Sony US18650VTC4 2100 mah,15 amp,30 amp,14c,0.3 ohm
+Sony US18650VTC5 2600 mah,15 amp,30 amp,11.5c,0.3 ohm
+Trustfire 14500 700 mah,2 amp,4 amp,2c,2.2 ohm
+Trustfire 16340 700 mah,2 amp,4 amp,2c,2.2 ohm
+Trustfire 18350 800 mah,4 amp,6.4 amp,5c,1.1 ohm
+Trustfire 18500 1300 maah,6.5 amp,8.5 amp,5c,0.7 ohm
+Trustfire 18650 1500 mah,7.5 amp,10 amp,5c,0.6 ohm
+NCR18650B 18650,3 amp,4 amp,1.1c,1.5 ohm
+NCR18650PF 18650,5 amp,10 amp,3.4c,0.9 ohm
+NCR18650PD 18650,5 amp,10 amp,3.4 c,0.9 ohm
+NCR18650 18650,2.7 amps,5.5 amps,.5 c,1.6 ohm
+sx22 18650,22 amp,29 amp,11 c,0.3 ohm

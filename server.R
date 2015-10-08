@@ -68,7 +68,7 @@ shinyServer(function(input, output, session) {
         cbj <- get_map(location = c(lon = mean(mydf$lon), lat = mean(mydf$lat)), zoom = 12)
         output$maps = renderPlot(ggmap(cbj) + geom_point(data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5 ) 
                                  +  geom_text(data = mydf , aes(x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5)) 
-                                 +  ggtitle("FDC Location in Google Maps")) 
+                                 +  ggtitle("FDC Location in MSC Zone")) 
 
         
         df1 <- read.csv("http://s3.amazonaws.com/csvpastebin/uploads/12bad2d273e2468c12515492eac4dfca/CEI_perUser_Score.csv")

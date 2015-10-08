@@ -66,7 +66,7 @@ shinyServer(function(input, output, session) {
         mydf <- as.data.frame(cbind(lon,lat,f))
         names(mydf) = c("lon","lat","f")
         cbj <- get_map(location = c(lon = mean(mydf$lon), lat = mean(mydf$lat)), zoom = 12)
-        output$maps = renderPlot(ggmap(cbj) + geom_point(data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red") 
+        output$maps = renderPlot(ggmap(cbj) + geom_point(data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5 ) 
                                  +  geom_text(data = mydf , aes(x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5)) 
                                  +  ggtitle("FDC Location in Google Maps")) 
 
@@ -179,9 +179,9 @@ shinyServer(function(input, output, session) {
             mydf <- as.data.frame(cbind(lon,lat,f))
             names(mydf) = c("lon","lat","f")
             cbj <- get_map(location = c(lon = mean(mydf$lon), lat = mean(mydf$lat)), zoom = 15)
-            renderPlot(ggmap(cbj) + geom_point(data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red") 
+            renderPlot(ggmap(cbj) + geom_point(data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5) 
                        +  geom_text(data = mydf , aes(x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5)) 
-                       +  ggtitle("FDC Location in Google Maps")) 
+                       +  ggtitle("FDC Location in MSC Zone")) 
           })
         
         

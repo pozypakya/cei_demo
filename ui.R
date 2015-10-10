@@ -57,14 +57,14 @@ shinyUI(fluidPage(#theme = shinytheme("cerulean"),
         HTML(
           '<table width="100%" border="1">  <tr><th>Component</th><th>What  is rated</th><th>Subscore</th><th>Best  Score</th>  </tr>  <tr><th >
           High  Speed Internet</th><td>Throughput,  latency per second</td><td  ><p>'
-        ),htmlOutput("hsiscore"),HTML('</p></td><td rowspan="3"
+        ), htmlOutput("hsiscore"),HTML('</p></td><td rowspan="3"
                 ><b><font size="5" >'),htmlOutput("overallscore"),HTML(
                   '</font></b></td>  </tr>  <tr><th >Voice  over Broadband
                   </th><td>Mean  opinion Score (MOS)</td><td  ><p>'
                 ),htmlOutput("vobbscore"),HTML(
                   '</p></td>  </tr>  <tr><th >HyppTV</th>
                   <td>Video  Mean Opinion Score, vMOS</td><td  ><p>'
-                ),htmlOutput("iptvscore"),HTML('</p></td>  </tr></table>')
+                ),htmlOutput("iptvscore"),HTML('</p></td>  </tr></table>'),br(),HTML(" Summary : ")
                 ),
       wellPanel(
         HTML('<b>DataSet</b><br><br>'),div(dataTableOutput("cei_table"), style = "font-size:80%")

@@ -11,14 +11,16 @@ shinyServer(function(input, output, session) {
   colnames(newrow) <- colnames(df1)
   newrow$login_id = "ALL CUSTOMER"
   df1 <- rbind(df1,newrow)
-  
+  df1 <- df1[with(df1, order(login_id)), ]
   
   newrowexchange = as.data.frame(t(c(1:13)))
   colnames(newrowexchange) <- colnames(df1)
   newrowexchange$exchange = "ALL EXCHANGE"
   df2 <- rbind(df1,newrowexchange)
   agg <- aggregate(df2$voice_score, list(df2$exchange),mean)
+  agg <- agg[with(df2, order(exchange)), ]
   names(agg) <- c("exchange","% of vobb performance")
+  agg <- na.omit(agg)
   
   updateSelectInput(
     session, "user", choices = as.character(as.factor(df1$login_id)), selected =

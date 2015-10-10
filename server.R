@@ -29,7 +29,15 @@ shinyServer(function(input, output, session) {
       as.character(as.factor(agg$exchange))
   )
   
-  
+  output$hsi <-
+    tryCatch({
+      renderPlot(
+        barplot(
+          1, type = "n" ,  ylim = c(0,50),col = "#A4CACC", ylab = "Total termination", xlab =
+            "date"
+        )
+      )
+    })
   
   Sys.setlocale(locale = "C")
   options(digits = 5)
@@ -245,6 +253,25 @@ shinyServer(function(input, output, session) {
           paste(input$exchange) == "ALL EXCHANGE") {
         print("masukkkk !!")
         
+        output$selcustomer <- renderText({
+          paste(input$user)
+        },quoted =)
+        TRUE
+        
+        
+        j <- read.csv("hsi_customer.csv")
+        j <- filter(j, j$login_id  == paste(input$user))
+        print(j)
+        output$hsi <-
+          tryCatch({
+            renderPlot(
+              barplot(
+                j$total, names.arg = j$dt, ylim = c(0,50),col = "#A4CACC", ylab = "Total termination", xlab =
+                  "date"
+              )
+            )
+          })
+        
         
         output$cei_table = renderDataTable({
           df2 <-
@@ -272,9 +299,110 @@ shinyServer(function(input, output, session) {
           output$package = renderText(paste(df3$package_name))
           output$address = renderText(
             paste(
-              df3$street_name,df3$street_name,df3$section_name,df3$postal_code,df3$city_name,df3$state_code
+              str_replace(df3$street_name , "NULL", ""),str_replace(df3$section_name , "NULL", ""),
+              str_replace(df3$postal_code , "NULL", ""),str_replace(df3$city_name , "NULL", ""), str_replace(df3$state_code , "NULL", "")
             )
           )
+          
+          output$maps <- tryCatch({
+            
+            df2 <-
+              read.csv("account.csv")
+            df1 <-
+              read.csv("CEI_perUser_Score.csv")
+            df3 <-
+              merge(x = df1, y = df2, by = "login_id", all.x = TRUE)
+            
+            
+            df3 <- filter(df3, login_id == paste(input$user))
+            names(df3) = c(names(df1),names(df2[2:9]))
+            
+            if ( is.na(as.numeric(df3$LAT)) & is.na(as.numeric(df3$LONG)) )
+            {
+              
+              if (as.character(df3$section_name) == "NULL")
+              {
+                print(as.character(df3$section_name))
+                
+                gc <- geocode(paste(str_replace(df3$zone , "ZONE", "")), source = "google")
+                #lon <- data.frame(gc$lon)
+                #lat <- data.frame(gc$lat)
+                
+                lon <- data.frame(gc$lon)
+                lat <- data.frame(gc$lat)
+                f <- data.frame(paste(df3$account_name))
+                mydf <- as.data.frame(cbind(lon,lat,f))
+                mydf <- as.data.frame(cbind(lon,lat,f))
+                names(mydf) = c("lon","lat","f")
+                
+                print(mydf)
+                cbj <-
+                  get_map(location = paste(str_replace(df3$zone , "ZONE", "")) , zoom = 12)
+                renderPlot(ggmap(cbj) + geom_point(
+                  data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
+                )+  geom_text(
+                  data = mydf , aes(
+                    x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.3
+                  )))
+              } else
+              {
+                print("ada alamat")
+                print(as.character(df3$section_name))
+                
+                gc <-
+                  geocode(paste(df3$street_name, df3$section_name, df3$city_name), source = "google")
+                
+                lon <- data.frame(gc$lon)
+                lat <- data.frame(gc$lat)
+                f <- data.frame(paste(df3$account_name))
+                mydf <- as.data.frame(cbind(lon,lat,f))
+                mydf <- as.data.frame(cbind(lon,lat,f))
+                names(mydf) = c("lon","lat","f")
+                
+                print(mydf)
+                cbj <-
+                  get_map(location = paste(df3$section_name) , zoom = 12)
+                renderPlot(ggmap(cbj) + geom_point(
+                  data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
+                )+  ggtitle("Unifi Customer Location") +  geom_text(
+                                   data = mydf , aes(
+                                     x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.3
+                                   )))
+                  
+                
+              }
+             
+             # if (df3$street_name == "")
+             # {
+                
+#                 cbj <-
+#                   get_map(location = paste(
+#                     str_replace(df3$zone , "ZONE", "")
+#                   ) , zoom = 12)
+#                 renderPlot(
+#                   ggmap(cbj)) 
+             # }
+            }
+            
+         
+              
+#               + geom_point(
+#                 data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
+#               )
+#               +  geom_text(
+#                 data = mydf , aes(
+#                   x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5
+#                 )
+#               )
+#               +  ggtitle("Exchange Location in MSC Zone")
+         #   )
+            
+          })
+          
+          #ggmap(get_map(location = "P9C/1 PRESINT 9 PUTRAJAYA ", zoom = 15 , maptype = "roadmap" ),legend = "right",extent = "panel", height = 600, width = 1800 )+ ggtitle("FDC Location in Google Maps")
+          
+          #P9C/1 PRESINT 9 62250 PUTRAJAYA WIL
+          
           #              df3 <-
           #               aggregate(
           #                 cbind(
@@ -415,174 +543,204 @@ shinyServer(function(input, output, session) {
       {
         if (paste(input$user) == "ALL CUSTOMER" &
             paste(input$exchange) != "ALL EXCHANGE") {
-          
           output$cei_table = renderDataTable({
-          
-          df2 <-    read.csv("account.csv")
-          df1 <-
-            read.csv("CEI_perUser_Score.csv")
-          df3 <-
-            merge(
-              x = df1, y = df2, by = "login_id", all.x = FALSE , all.y = FALSE
-            )
-          df3 <-
-            aggregate(
-              cbind(
-                df3$voice_score,df3$internet_score,df3$iptv_score,df3$LONG,df3$LAT
-              ) ~ df3$exchange , data = df3, mean , na.rm = TRUE
-            )
-          names(df3) <-
-            c("exchange","vobb_score","hsi_score","iptv_score","long","lat")
-          
-          
-          df3 <- filter(df3, exchange == paste(input$exchange))
-          print(df3)
-          
-          
-          if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  > 0.0 &
-              as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  < 0.67)  {
-            output$vobbscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(as.numeric(
-                str_replace(df3$vobb_score , "\\[1] ", "")
-              ),2)),paste("</th>")
-            ))
-            
-          } else if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  >= 0.67 &
-                     as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  < 0.88)  {
-            output$vobbscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
-                str_replace(df3$vobb_score , "\\[1] ", "")
-              ),2)),paste("</th>")
-            ))
-            
-          } else if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  >= 0.88)  {
-            output$vobbscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(as.numeric(
-                str_replace(df3$vobb_score , "\\[1] ", "")
-              ),2)),paste("</th>")
-            ))
-          }
-          
-          if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  > 0.0 &
-              as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  < 0.67)  {
-            output$hsiscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(as.numeric(
-                str_replace(df3$hsi_score , "\\[1] ", "")
-              ),2)),paste("</th>")
-            ))
-            
-          } else if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  >= 0.67 &
-                     as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  < 0.88)  {
-            output$hsiscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
-                str_replace(df3$hsi_score , "\\[1] ", "")
-              ),2)),paste("</th>")
-            ))
-            
-          } else if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  >= 0.88)  {
-            output$hsiscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(as.numeric(
-                str_replace(df3$hsi_score , "\\[1] ", "")
-              ),2)),paste("</th>")
-            ))
-          }
-          
-          if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  > 0.0 &
-              as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.67)  {
-            output$iptvscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(
-                as.numeric(str_replace(df3$iptv_score , "\\[1] ", "")) / 5,2
-              )),paste("</th>")
-            ))
-            
-          } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.67 &
-                     as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.88)  {
-            output$iptvscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(
-                as.numeric(str_replace(df3$iptv_score , "\\[1] ", "")) / 5,2
-              )),paste("</th>")
-            ))
-            
-          } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.88)  {
-            output$iptvscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(
-                as.numeric(str_replace(df3$iptv_score , "\\[1] ", "")) / 5,2
-              )),paste("</th>")
-            ))
-          }
-          
-          overallscore = sum(round(as.numeric(
-            str_replace(df3$vobb_score , "\\[1] ", "")
-          ),2),round(as.numeric(
-            str_replace(df3$hsi_score , "\\[1] ", "")
-          ),2),round(as.numeric(
-            str_replace(df3$iptv_score , "\\[1] ", "")
-          ) / 5,2))
-          
-          overallscore <- overallscore / 3
-          
-          print(overallscore)
-          
-          
-          if (overallscore  > 0.0 & overallscore  < 0.67)  {
-            output$overallscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(as.numeric(
-                overallscore
-              ),2)),paste("</th>")
-            ))
-            
-          } else if (overallscore >= 0.67 &
-                     overallscore  < 0.88)  {
-            output$overallscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
-                overallscore
-              ),2)),paste("</th>")
-            ))
-            
-          } else if (overallscore  >= 0.88)  {
-            output$overallscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(as.numeric(
-                overallscore
-              ),2)),paste("</th>")
-            ))
-            
-          }
-          
-          output$maps <- tryCatch({
-            #print(lon)
-            
-            
-            lon <- data.frame(df3$long)
-            lat <- data.frame(df3$lat)
-            f <- data.frame(df3$exchange)
-            mydf <- as.data.frame(cbind(lon,lat,f))
-            names(mydf) = c("lon","lat","f")
-            cbj <-
-              get_map(location = c(
-                lon = mean(mydf$lon), lat = mean(mydf$lat)
-              ), zoom = 12)
-            renderPlot(
-              ggmap(cbj) + geom_point(
-                data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
+            df2 <-    read.csv("account.csv")
+            df1 <-
+              read.csv("CEI_perUser_Score.csv")
+            df3 <-
+              merge(
+                x = df1, y = df2, by = "login_id", all.x = FALSE , all.y = FALSE
               )
-              +  geom_text(
-                data = mydf , aes(
-                  x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5
+            df3 <-
+              aggregate(
+                cbind(
+                  df3$voice_score,df3$internet_score,df3$iptv_score,df3$LONG,df3$LAT
+                ) ~ df3$exchange , data = df3, mean , na.rm = TRUE
+              )
+            names(df3) <-
+              c("exchange","vobb_score","hsi_score","iptv_score","long","lat")
+            
+            
+            df3 <- filter(df3, exchange == paste(input$exchange))
+            print(df3)
+            
+            
+            if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  > 0.0 &
+                as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  < 0.67)  {
+              output$vobbscore = renderText(paste(
+                "<th bgcolor=red scope=row>",paste(round(
+                  as.numeric(str_replace(
+                    df3$vobb_score , "\\[1] ", ""
+                  )),2
+                )),paste("</th>")
+              ))
+              
+            } else if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  >= 0.67 &
+                       as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  < 0.88)  {
+              output$vobbscore = renderText(paste(
+                "<th bgcolor=yellow scope=row>",paste(round(
+                  as.numeric(str_replace(
+                    df3$vobb_score , "\\[1] ", ""
+                  )),2
+                )),paste("</th>")
+              ))
+              
+            } else if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  >= 0.88)  {
+              output$vobbscore = renderText(paste(
+                "<th bgcolor=green scope=row>",paste(round(
+                  as.numeric(str_replace(
+                    df3$vobb_score , "\\[1] ", ""
+                  )),2
+                )),paste("</th>")
+              ))
+            }
+            
+            if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  > 0.0 &
+                as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  < 0.67)  {
+              output$hsiscore = renderText(paste(
+                "<th bgcolor=red scope=row>",paste(round(
+                  as.numeric(str_replace(df3$hsi_score , "\\[1] ", "")),2
+                )),paste("</th>")
+              ))
+              
+            } else if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  >= 0.67 &
+                       as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  < 0.88)  {
+              output$hsiscore = renderText(paste(
+                "<th bgcolor=yellow scope=row>",paste(round(
+                  as.numeric(str_replace(df3$hsi_score , "\\[1] ", "")),2
+                )),paste("</th>")
+              ))
+              
+            } else if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  >= 0.88)  {
+              output$hsiscore = renderText(paste(
+                "<th bgcolor=green scope=row>",paste(round(
+                  as.numeric(str_replace(df3$hsi_score , "\\[1] ", "")),2
+                )),paste("</th>")
+              ))
+            }
+            
+            if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  > 0.0 &
+                as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.67)  {
+              output$iptvscore = renderText(paste(
+                "<th bgcolor=red scope=row>",paste(round(
+                  as.numeric(str_replace(
+                    df3$iptv_score , "\\[1] ", ""
+                  )) / 5,2
+                )),paste("</th>")
+              ))
+              
+            } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.67 &
+                       as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.88)  {
+              output$iptvscore = renderText(paste(
+                "<th bgcolor=yellow scope=row>",paste(round(
+                  as.numeric(str_replace(
+                    df3$iptv_score , "\\[1] ", ""
+                  )) / 5,2
+                )),paste("</th>")
+              ))
+              
+            } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.88)  {
+              output$iptvscore = renderText(paste(
+                "<th bgcolor=green scope=row>",paste(round(
+                  as.numeric(str_replace(
+                    df3$iptv_score , "\\[1] ", ""
+                  )) / 5,2
+                )),paste("</th>")
+              ))
+            }
+            
+            overallscore = sum(round(as.numeric(
+              str_replace(df3$vobb_score , "\\[1] ", "")
+            ),2),round(as.numeric(
+              str_replace(df3$hsi_score , "\\[1] ", "")
+            ),2),round(as.numeric(
+              str_replace(df3$iptv_score , "\\[1] ", "")
+            ) / 5,2))
+            
+            overallscore <- overallscore / 3
+            
+            print(overallscore)
+            
+            
+            if (overallscore  > 0.0 & overallscore  < 0.67)  {
+              output$overallscore = renderText(paste(
+                "<th bgcolor=red scope=row>",paste(round(
+                  as.numeric(overallscore),2
+                )),paste("</th>")
+              ))
+              
+            } else if (overallscore >= 0.67 &
+                       overallscore  < 0.88)  {
+              output$overallscore = renderText(paste(
+                "<th bgcolor=yellow scope=row>",paste(round(
+                  as.numeric(overallscore),2
+                )),paste("</th>")
+              ))
+              
+            } else if (overallscore  >= 0.88)  {
+              output$overallscore = renderText(paste(
+                "<th bgcolor=green scope=row>",paste(round(
+                  as.numeric(overallscore),2
+                )),paste("</th>")
+              ))
+              
+            }
+            
+            
+            j <- read.csv("hsi.csv")
+            j <- filter(j, j$msan  == paste(input$exchange))
+            print(j)
+            output$hsi_all <-
+              tryCatch({
+                renderPlot(
+                  barplot(
+                    j$total, names.arg = j$dt, ylim = c(0,10000),col = c("#8199A7","#42616E","#A4CACC"),
+                    ylab = "Termination", xlab =
+                      "date"
+                  )
                 )
-              )
-              +  ggtitle("Exchange Location in MSC Zone")
-            )
+              })
             
-          })
-          
-          df3
-          
+            print("----------------")
+            
+            
+            output$maps <- tryCatch({
+              #print(lon)
+              
+              
+              lon <- data.frame(df3$long)
+              lat <- data.frame(df3$lat)
+              f <- data.frame(df3$exchange)
+              mydf <- as.data.frame(cbind(lon,lat,f))
+              names(mydf) = c("lon","lat","f")
+              cbj <-
+                get_map(location = c(
+                  lon = mean(mydf$lon), lat = mean(mydf$lat)
+                ), zoom = 12)
+              renderPlot(
+                ggmap(cbj) + geom_point(
+                  data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
+                )
+                +  geom_text(
+                  data = mydf , aes(
+                    x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5
+                  )
+                )
+                +  ggtitle("Exchange Location in MSC Zone")
+              )
+              
+            })
+            
+            
+            df3
+            
           }, options = list(
             lengthMenu = c(5, 10, 15,20), pageLength = 5, bAutoWidth = TRUE ,scrollX = TRUE,scrolly = TRUE
           ))
           
         }
       }
+      
       
       
       
@@ -613,8 +771,8 @@ shinyServer(function(input, output, session) {
   
   render_hsi_single_customer <- function() {
     #data <- read.csv("http://s3.amazonaws.com/csvpastebin/uploads/86a7d7c118b9be49adc14f1d64565a4e/lostcarrier.csv")
-    data <- sample(1:10, 1000,replace = TRUE)
-    hist(data , col = "#8199A7")
+    #data <- sample(1:10, 1000,replace = TRUE)
+    #hist(data , col = "#8199A7")
   }
   
   render_vobb_single_customer <- function() {
@@ -628,18 +786,19 @@ shinyServer(function(input, output, session) {
   }
   
   
-  render_hsi_all_customer <- function() {
-   # data3 <- sample(1:1000, 1000,replace = TRUE)
-   # hist(
-    #  data3,col = "#8199A7",main = "",xlim = c(0,1000),las = 1,breaks = 200
-   # )
-    
-    j <- read.csv("hsi.csv")
-    j <- filter(j, j$msan == "CBJ")
-    ur <- barplot(j$total, names.arg=j$dt, ylim=c(0,10000),col=c("#8199A7","#42616E","#A4CACC"),
-                  ylab="Termination", xlab="date")
-    
-  }
+  #  render_hsi_all_customer <- function() {
+  # data3 <- sample(1:1000, 1000,replace = TRUE)
+  # hist(
+  #  data3,col = "#8199A7",main = "",xlim = c(0,1000),las = 1,breaks = 200
+  # )
+  
+  #     j <- read.csv("hsi.csv")
+  #     j <- filter(j, j$msan == "CBJ")
+  #     ur <- barplot(j$total, names.arg=j$dt, ylim=c(0,10000),col=c("#8199A7","#42616E","#A4CACC"),
+  #                   ylab="Termination", xlab="date")
+  #     output$hsi_all <- renderPlot(ur)
+  
+  #  }
   
   render_vobb_all_customer <- function() {
     data4 <- sample(1:1000, 1000,replace = TRUE)
@@ -723,13 +882,13 @@ shinyServer(function(input, output, session) {
     #selectInput(customer$long, "Customer Selection:",  customer$address )
   })
   
-  output$hsi <- renderPlot(render_hsi_single_customer())
+  #output$hsi <- renderPlot(render_hsi_single_customer())
   
   output$vobb <- renderPlot(render_vobb_single_customer())
   
   output$iptv <- renderPlot(render_iptv_single_customer())
   
-  output$hsi_all <- renderPlot(render_hsi_all_customer())
+  #output$hsi_all <- renderPlot(render_hsi_all_customer())
   
   output$vobb_all <- renderPlot(render_vobb_all_customer())
   

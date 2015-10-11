@@ -1,8 +1,8 @@
 name: cei_demo
 account: pozypakya
 server: shinyapps.io
-bundleId: 285139
+bundleId: 285611
 url: https://pozypakya.shinyapps.io/cei_demo
-when: 1444499473.93928
+when: 1444576985.57369
 asMultiple: FALSE
 asStatic: FALSE

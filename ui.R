@@ -8,7 +8,7 @@ library(reshape2)
 shinyUI(fluidPage(#theme = shinytheme("flatly"),
   titlePanel(
     HTML(
-      '<b><font face="Tahoma, Geneva, sans-serif" size="6"color="#42616E">Customer Experience Index ( CEI ) 1.0</font></b>'
+      '<b><font face="Tahoma, Geneva, sans-serif" size="6"color="#42616E">TM Customer Experience Index (CEI)</font></b>'
     )
   ),
   fluidRow(
@@ -52,7 +52,7 @@ shinyUI(fluidPage(#theme = shinytheme("flatly"),
       8,
       #wellPanel(HTML('<b>Customer\'s Experience Index</b>'),br(),br(),HTML('The Triple Play Experience Index assess key system components on a scale of 1.0 to 5.0')),
       #wellPanel(HTML('<b>Status</b><br><br>'),HTML('<img width=5% height=5% src="cau.png"/>&nbsp&nbsp New data available . Your experience index needs to be refresh.&nbsp&nbsp&nbsp&nbsp'), actionButton("refresh", "Refresh")),
-      wellPanel(
+      wellPanel(HTML(" Summary : { Some notes here  ....} "),br(),
         HTML('<b>Score</b><br><br>'),
         HTML(
           '<table width="100%" border="4" bordercolor=#42616E >  <tr><th>Component</th><th>What  is rated</th><th>Subscore</th><th>Best  Score</th>  </tr>  <tr><th >
@@ -64,24 +64,24 @@ shinyUI(fluidPage(#theme = shinytheme("flatly"),
                 ),htmlOutput("vobbscore"),HTML(
                   '</p></td>  </tr>  <tr><th >HyppTV</th>
                   <td>Video  Mean Opinion Score, vMOS</td><td  ><p>'
-                ),htmlOutput("iptvscore"),HTML('</p></td>  </tr></table>'),br(),HTML(" Summary : ")
+                ),htmlOutput("iptvscore"),HTML('</p></td>  </tr></table>'),br(),HTML(" Summary : { Some notes here regarding the summary ....} ")
                 ),
-      wellPanel(
+      wellPanel(HTML(" Summary : { Some notes here  ....} "),br(),
         HTML('<b>DataSet</b><br><br>'),div(dataTableOutput("cei_table"), style = "font-size:80%")
       ),
-      wellPanel(
+      wellPanel(HTML(" Summary : { Some notes here  ....} "),br(),
         HTML('<b>Maps</b><br><br>'),
         HTML('<tr><th scope="row">'),plotOutput("maps", width = "100%", height = "600px"),HTML('</th></tr>')
       ),
-      wellPanel(
+      wellPanel(HTML(" Summary : { Some notes here  ....} "),br(),
         HTML('<b>Performance</b>'),
         wellPanel(
           HTML('<b>HSI</b>'),plotOutput("hsi_all", width = "100%", height = "400px")
         ),br(),
-        wellPanel(
+        wellPanel(HTML(" Summary : { Some notes here  ....} "),br(),
           HTML('<b>VOBB</b>'),plotOutput("vobb_all", width = "100%", height = "400px")
         ),br(),
-        wellPanel(
+        wellPanel(HTML(" Summary : { Some notes here  ....} "),br(),
           HTML('<b>IPTV</b>'),plotOutput("iptv_all", width = "100%", height = "400px")
         ),br()
       ),

@@ -47,6 +47,26 @@ shinyServer(function(input, output, session) {
       )
     })
   
+  
+  
+  j <- read.csv("hsi.csv")
+  j <- aggregate(cbind(j$dt,j$total) ~ j$dt , data = j, sum , na.rm = TRUE)
+  names(j) = c("dt","count","total")
+  j <- j[order(as.Date(j$dt, format="%m/%d/%Y")),]
+  print(j)
+  
+  
+  output$hsi_all <-
+    tryCatch({
+      renderPlot(
+        barplot(
+          j$total, names.arg = j$dt, ylim = c(0,100000),col = c("#8199A7","#42616E","#A4CACC"),
+          ylab = "Termination", xlab =
+            "date"
+        )
+      )
+    })
+  
   Sys.setlocale(locale = "C")
   options(digits = 5)
   # Create a random name for the log file
@@ -72,8 +92,9 @@ shinyServer(function(input, output, session) {
         paste(input$exchange) == "ALL EXCHANGE") {
       
       
-      
+      print("xxx")
       # 101.67 2.9017
+ 
       
       
       # output$maps = renderPlot(ggmap(get_map(location = "PutraJaya, Malaysia", zoom = 15 , maptype = "roadmap" ),legend = "right",extent = "panel", height = 600, width = 1800 )+ ggtitle("FDC Location in Google Maps"))
@@ -118,11 +139,11 @@ shinyServer(function(input, output, session) {
           )
         names(df3) <-
           c("exchange","vobb_score","hsi_score","iptv_score","long","lat")
-        print(df3)
+        #print(df3)
         
         df4 <- colMeans(df3[2:4])
         df4 <- as.data.frame(t(melt(df4)))
-        print(df4)
+        #print(df4)
         
         if (df4$vobb_score  > 0.0 & df4$vobb_score  < 0.67)  {
           output$vobbscore = renderText(paste(
@@ -207,7 +228,7 @@ shinyServer(function(input, output, session) {
         
         overallscore <- overallscore / 3
         
-        print(overallscore)
+        #print(overallscore)
         
         if (overallscore  > 0.0 & overallscore  < 0.67)  {
           output$overallscore = renderText(paste(
@@ -244,7 +265,7 @@ shinyServer(function(input, output, session) {
           h <- data.frame(fdp$RADIAL_DIST_METER)
           fdpmydf <- as.data.frame(cbind(lon,lat,f,g,h))
           names(fdpmydf) = c("lon","lat","exc","fdc","d")
-          print(fdpmydf)
+          #print(fdpmydf)
           
           
           fdc <- read.csv("MSC_FDC_DATA.csv")
@@ -255,7 +276,7 @@ shinyServer(function(input, output, session) {
           h <- data.frame(fdc$RADIAL_DIST_METER)
           fdcmydf <- as.data.frame(cbind(lon,lat,f,g,h))
           names(fdcmydf) = c("lon","lat","exc","fdc","d")
-          print(fdcmydf)
+          #print(fdcmydf)
           
           
           lon <- data.frame(df3$long)
@@ -326,7 +347,7 @@ shinyServer(function(input, output, session) {
         
         j <- read.csv("hsi_customer.csv")
         j <- filter(j, j$login_id  == paste(input$user))
-        print(j)
+        #print(j)
         output$hsi <-
           tryCatch({
             renderPlot(
@@ -353,7 +374,7 @@ shinyServer(function(input, output, session) {
           #df3 <- as.data.frame(df3)
           #df3 <- cbind(names(df3))
           
-          print(df3$login_id)
+          #print(df3$login_id)
           
           output$fdc = renderText(paste(df3$FDC))
           output$dn = renderText(paste(df3$devicename))
@@ -387,7 +408,7 @@ shinyServer(function(input, output, session) {
               
               if (as.character(df3$section_name) == "NULL")
               {
-                print(as.character(df3$section_name))
+                #print(as.character(df3$section_name))
                 
                 gc <- geocode(paste(str_replace(df3$zone , "ZONE", "")), source = "google")
                 #lon <- data.frame(gc$lon)
@@ -400,7 +421,7 @@ shinyServer(function(input, output, session) {
                 mydf <- as.data.frame(cbind(lon,lat,f))
                 names(mydf) = c("lon","lat","f")
                 
-                print(mydf)
+                #print(mydf)
                 cbj <-
                   get_map(location = paste(str_replace(df3$zone , "ZONE", "")) , zoom = 12 , maptype = "toner" , color = "bw")
                 renderPlot(ggmap(cbj) + geom_point(
@@ -412,7 +433,7 @@ shinyServer(function(input, output, session) {
               } else
               {
                 print("ada alamat")
-                print(as.character(df3$section_name))
+                #print(as.character(df3$section_name))
                 
                 fdp <- read.csv("MSC_FDP_DATA.csv")
                 lon <- data.frame(fdp$LONG)
@@ -422,7 +443,7 @@ shinyServer(function(input, output, session) {
                 h <- data.frame(fdp$RADIAL_DIST_METER)
                 fdpmydf <- as.data.frame(cbind(lon,lat,f,g,h))
                 names(fdpmydf) = c("lon","lat","exc","fdc","d")
-                print(fdpmydf)
+                #print(fdpmydf)
                 
                 
                 fdc <- read.csv("MSC_FDC_DATA.csv")
@@ -433,7 +454,7 @@ shinyServer(function(input, output, session) {
                 h <- data.frame(fdc$RADIAL_DIST_METER)
                 fdcmydf <- as.data.frame(cbind(lon,lat,f,g,h))
                 names(fdcmydf) = c("lon","lat","exc","fdc","d")
-                print(fdcmydf)
+                #print(fdcmydf)
                 
                 gc <-
                   geocode(paste(df3$street_name, df3$section_name, df3$city_name), source = "google")
@@ -523,7 +544,7 @@ shinyServer(function(input, output, session) {
           #df3 <- colMeans(df3[2:6])
           #df3 <- as.data.frame(t(melt(df3)))
           
-          print(df3)
+          #print(df3)
           
           if (as.numeric(str_replace(df3$voice_score , "\\[1] ", ""))  > 0.0 &
               as.numeric(str_replace(df3$voice_score , "\\[1] ", ""))  < 0.67)  {
@@ -607,7 +628,7 @@ shinyServer(function(input, output, session) {
           
           overallscore <- overallscore / 3
           
-          print(overallscore)
+          #print(overallscore)
           
           
           if (overallscore  > 0.0 & overallscore  < 0.67)  {
@@ -650,7 +671,7 @@ shinyServer(function(input, output, session) {
             paste(input$exchange) != "ALL EXCHANGE") {
           
           
-       
+          print("ubah ini")
           
           output$cei_table = renderDataTable({
             df2 <-    read.csv("account.csv")
@@ -671,7 +692,37 @@ shinyServer(function(input, output, session) {
             
             
             df3 <- filter(df3, exchange == paste(input$exchange))
-            print(df3)
+            #print(df3)
+            
+            
+          
+            
+            
+            fdp <- read.csv("MSC_FDP_DATA.csv")
+            lon <- data.frame(fdp$LONG)
+            lat <- data.frame(fdp$LAT)
+            f <- data.frame(fdp$EXC_ABB)
+            g <- data.frame(fdp$FDC_CODE)
+            h <- data.frame(fdp$RADIAL_DIST_METER)
+            fdpmydf <- as.data.frame(cbind(lon,lat,f,g,h))
+            names(fdpmydf) = c("lon","lat","exc","fdc","d")
+            fdpmydf <- filter(fdpmydf, exc == paste(input$exchange))
+            print(fdpmydf)
+            
+            
+            fdc <- read.csv("MSC_FDC_DATA.csv")
+            lon <- data.frame(fdc$LONG)
+            lat <- data.frame(fdc$LAT)
+            f <- data.frame(fdc$EXC_ABB)
+            g <- data.frame(fdc$FDC_CODE)
+            h <- data.frame(fdc$RADIAL_DIST_METER)
+            fdcmydf <- as.data.frame(cbind(lon,lat,f,g,h))
+            names(fdcmydf) = c("lon","lat","exc","fdc","d")
+            fdcmydf <- filter(fdcmydf, exc == paste(input$exchange))
+            print(fdcmydf)
+            
+            
+            
             
             
             if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  > 0.0 &
@@ -768,7 +819,7 @@ shinyServer(function(input, output, session) {
             
             overallscore <- overallscore / 3
             
-            print(overallscore)
+            #print(overallscore)
             
             
             if (overallscore  > 0.0 & overallscore  < 0.67)  {
@@ -798,7 +849,7 @@ shinyServer(function(input, output, session) {
             
             j <- read.csv("hsi.csv")
             j <- filter(j, j$msan  == paste(input$exchange))
-            print(j)
+            #print(j)
             output$hsi_all <-
               tryCatch({
                 renderPlot(
@@ -810,11 +861,13 @@ shinyServer(function(input, output, session) {
                 )
               })
             
-            print("----------------")
+            #print("----------------")
             
             
             output$maps <- tryCatch({
-              #print(lon)
+              
+              
+              print("one 4444")
               
               
               # one person
@@ -827,9 +880,26 @@ shinyServer(function(input, output, session) {
               cbj <-
                 get_map(location = c(
                   lon = mean(mydf$lon), lat = mean(mydf$lat)
-                ), zoom = 12 , maptype = "toner" , color = "bw")
+                ), zoom = 13 , maptype = "toner" , color = "bw" )
               renderPlot(
-                ggmap(cbj) + geom_point(
+                ggmap(cbj) 
+                
+                +  geom_text(
+                  data = fdpmydf , aes(
+                    x = lon, y = lat , label = "", size = 3, vjust = 0, hjust = -2.5
+                  )
+                ) + geom_point(
+                  data = fdpmydf, aes(x = lon, y = lat),  alpha = 1 , col = "blue" , size = round(h*0.000621371)
+                )
+                +  geom_text(
+                  data = fdcmydf , aes(
+                    x = lon, y = lat , label = "", size = 3, vjust = 0, hjust = -2.5
+                  )
+                ) + geom_point(
+                  data = fdcmydf, aes(x = lon, y = lat),  alpha = 1 , col = "darkgreen" , size = round(h*0.000621371) 
+                )
+                
+                + geom_point(
                   data = mydf, aes(x = lon, y = lat),  alpha = 1 , col = "red" , size = 5
                 )
                 +  geom_text(
@@ -837,7 +907,7 @@ shinyServer(function(input, output, session) {
                     x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5
                   )
                 )
-                +  ggtitle("Exchange Location in MSC Zone")
+                +  ggtitle(paste(df3$exchange," Zone - Red : Exchange , Blue : FDP , GREEN : FDC"))
               )
               
             })

@@ -5,10 +5,10 @@ library(shinythemes)
 library(reshape2)
 
 
-shinyUI(fluidPage(#theme = shinytheme("cerulean"),
+shinyUI(fluidPage(#theme = shinytheme("flatly"),
   titlePanel(
     HTML(
-      '<b><font size="6"color="#42616E">Customer Experience Index ( CEI ) 1.0</font></b>'
+      '<b><font face="Tahoma, Geneva, sans-serif" size="6"color="#42616E">Customer Experience Index ( CEI ) 1.0</font></b>'
     )
   ),
   fluidRow(
@@ -55,7 +55,7 @@ shinyUI(fluidPage(#theme = shinytheme("cerulean"),
       wellPanel(
         HTML('<b>Score</b><br><br>'),
         HTML(
-          '<table width="100%" border="1">  <tr><th>Component</th><th>What  is rated</th><th>Subscore</th><th>Best  Score</th>  </tr>  <tr><th >
+          '<table width="100%" border="4" bordercolor=#42616E >  <tr><th>Component</th><th>What  is rated</th><th>Subscore</th><th>Best  Score</th>  </tr>  <tr><th >
           High  Speed Internet</th><td>Throughput,  latency per second</td><td  ><p>'
         ), htmlOutput("hsiscore"),HTML('</p></td><td rowspan="3"
                 ><b><font size="5" >'),htmlOutput("overallscore"),HTML(
@@ -74,7 +74,7 @@ shinyUI(fluidPage(#theme = shinytheme("cerulean"),
         HTML('<tr><th scope="row">'),plotOutput("maps", width = "100%", height = "600px"),HTML('</th></tr>')
       ),
       wellPanel(
-        HTML('<b>Cyberjaya Exchange Performance</b>'),
+        HTML('<b>Performance</b>'),
         wellPanel(
           HTML('<b>HSI</b>'),plotOutput("hsi_all", width = "100%", height = "400px")
         ),br(),

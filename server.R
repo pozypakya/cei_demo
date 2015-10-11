@@ -3,6 +3,7 @@ library(dplyr)
 library(stringr)
 
 shinyServer(function(input, output, session) {
+  
   #https://s3.amazonaws.com/csvpastebin/uploads/b28cd41beec5f4c85b36189f2aea6e30/account.csv
   
   newrow = as.data.frame(t(c(1:13)))
@@ -22,13 +23,18 @@ shinyServer(function(input, output, session) {
   names(agg) <- c("exchange","% of vobb performance")
   agg <- na.omit(agg)
   
+
+  
+  
   updateSelectInput(
     session, "user", choices = as.character(as.factor(df1$login_id)), selected =
       as.character(as.factor(df1$login_id))
   )
+  
   updateSelectInput(
     session, "exchange", choices = as.character(as.factor(agg$exchange)), selected =
-      as.character(as.factor(agg$exchange))
+      as.character(as.factor(agg$exchange)) 
+
   )
   
   output$hsi <-
@@ -56,9 +62,17 @@ shinyServer(function(input, output, session) {
     
   })
   
+  
+  # This is the place where all scripts is automatically loaded
+  
   formulaText <- reactive({
+    
+    
     if (paste(input$user) == "ALL CUSTOMER" &
         paste(input$exchange) == "ALL EXCHANGE") {
+      
+      
+      
       # 101.67 2.9017
       
       
@@ -67,10 +81,14 @@ shinyServer(function(input, output, session) {
       output$cei_table = renderDataTable({
         #output$hsicolor1 = renderText("<th bgcolor=white scope=row>0.0</th>")
         
-        output$vobbscore = renderText("<th bgcolor=white scope=row>0.0</th>")
-        output$hsiscore = renderText("<th bgcolor=white scope=row>0.0</th>")
-        output$iptvscore = renderText("<th bgcolor=white scope=row>0.0</th>")
-        output$overallscore = renderText("<th bgcolor=white scope=row>0.0</th>")
+        output$vobbscore = renderText("<th style=\"color: white;\" scope=row>0.0</th>")
+        output$hsiscore = renderText("<th style=\"color: white;\" scope=row>0.0</th>")
+        output$iptvscore = renderText("<th style=\"color: white;\" scope=row>0.0</th>")
+        output$overallscore = renderText("<th style=\"color: white;\" scope=row>0.0</th>")
+        
+        
+     
+        
         
         newrow = as.data.frame(t(c(1:13)))
         df1 <-
@@ -108,7 +126,7 @@ shinyServer(function(input, output, session) {
         
         if (df4$vobb_score  > 0.0 & df4$vobb_score  < 0.67)  {
           output$vobbscore = renderText(paste(
-            "<th bgcolor=red scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(as.numeric(
               df4$vobb_score
             ),2)),paste("</th>")
           ))
@@ -116,14 +134,14 @@ shinyServer(function(input, output, session) {
         } else if (df4$vobb_score >= 0.67 &
                    df4$vobb_score  < 0.88)  {
           output$vobbscore = renderText(paste(
-            "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(as.numeric(
               df4$vobb_score
             ),2)),paste("</th>")
           ))
           
         } else if (df4$vobb_score  >= 0.88)  {
           output$vobbscore = renderText(paste(
-            "<th bgcolor=green scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\"  bgcolor=green scope=row>",paste(round(as.numeric(
               df4$vobb_score
             ),2)),paste("</th>")
           ))
@@ -133,7 +151,7 @@ shinyServer(function(input, output, session) {
         
         if (df4$hsi_score  > 0.0 & df4$hsi_score  < 0.67)  {
           output$hsiscore = renderText(paste(
-            "<th bgcolor=red scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(as.numeric(
               df4$hsi_score
             ),2)),paste("</th>")
           ))
@@ -141,14 +159,14 @@ shinyServer(function(input, output, session) {
         } else if (df4$hsi_score >= 0.67 &
                    df4$hsi_score  < 0.88)  {
           output$hsiscore = renderText(paste(
-            "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(as.numeric(
               df4$hsi_score
             ),2)),paste("</th>")
           ))
           
         } else if (df4$hsi_score  >= 0.88)  {
           output$hsiscore = renderText(paste(
-            "<th bgcolor=green scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(as.numeric(
               df4$hsi_score
             ),2)),paste("</th>")
           ))
@@ -157,7 +175,7 @@ shinyServer(function(input, output, session) {
         
         if (df4$iptv_score  > 0.0 & df4$iptv_score  < 0.67)  {
           output$iptvscore = renderText(paste(
-            "<th bgcolor=red scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(as.numeric(
               df4$iptv_score
             ),2)),paste("</th>")
           ))
@@ -165,14 +183,14 @@ shinyServer(function(input, output, session) {
         } else if (df4$iptv_score >= 0.67 &
                    df4$iptv_score  < 0.88)  {
           output$iptvscore = renderText(paste(
-            "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(as.numeric(
               df4$iptv_score
             ),2)),paste("</th>")
           ))
           
         } else if (df4$iptv_score  >= 0.88)  {
           output$iptvscore = renderText(paste(
-            "<th bgcolor=green scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(as.numeric(
               df4$iptv_score
             ),2)),paste("</th>")
           ))
@@ -193,21 +211,21 @@ shinyServer(function(input, output, session) {
         
         if (overallscore  > 0.0 & overallscore  < 0.67)  {
           output$overallscore = renderText(paste(
-            "<th bgcolor=red scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(as.numeric(
               overallscore
             ),2)),paste("</th>")
           ))
           
         } else if (overallscore >= 0.67 & overallscore  < 0.88)  {
           output$overallscore = renderText(paste(
-            "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(as.numeric(
               overallscore
             ),2)),paste("</th>")
           ))
           
         } else if (overallscore  >= 0.88)  {
           output$overallscore = renderText(paste(
-            "<th bgcolor=green scope=row>",paste(round(as.numeric(
+            "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(as.numeric(
               overallscore
             ),2)),paste("</th>")
           ))
@@ -218,6 +236,27 @@ shinyServer(function(input, output, session) {
         output$maps <- tryCatch({
           #print(lon)
           
+          fdp <- read.csv("MSC_FDP_DATA.csv")
+          lon <- data.frame(fdp$LONG)
+          lat <- data.frame(fdp$LAT)
+          f <- data.frame(fdp$EXC_ABB)
+          g <- data.frame(fdp$FDC_CODE)
+          h <- data.frame(fdp$RADIAL_DIST_METER)
+          fdpmydf <- as.data.frame(cbind(lon,lat,f,g,h))
+          names(fdpmydf) = c("lon","lat","exc","fdc","d")
+          print(fdpmydf)
+          
+          
+          fdc <- read.csv("MSC_FDC_DATA.csv")
+          lon <- data.frame(fdc$LONG)
+          lat <- data.frame(fdc$LAT)
+          f <- data.frame(fdc$EXC_ABB)
+          g <- data.frame(fdc$FDC_CODE)
+          h <- data.frame(fdc$RADIAL_DIST_METER)
+          fdcmydf <- as.data.frame(cbind(lon,lat,f,g,h))
+          names(fdcmydf) = c("lon","lat","exc","fdc","d")
+          print(fdcmydf)
+          
           
           lon <- data.frame(df3$long)
           lat <- data.frame(df3$lat)
@@ -226,18 +265,34 @@ shinyServer(function(input, output, session) {
           names(mydf) = c("lon","lat","f")
           cbj <-
             get_map(location = c(
-              lon = mean(mydf$lon), lat = mean(mydf$lat)
-            ), zoom = 12)
+              lon = mean(mydf$lon), lat = mean(mydf$lat) 
+            ), zoom = 12 , maptype = "toner" , color = "bw")
           renderPlot(
-            ggmap(cbj) + geom_point(
-              data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
+            ggmap(cbj) 
+            +  geom_text(
+              data = fdpmydf , aes(
+                x = lon, y = lat , label = "", size = 3, vjust = 0, hjust = -2.5
+              )
+            ) + geom_point(
+              data = fdpmydf, aes(x = lon, y = lat),  alpha = 1 , col = "blue" , size = 1 
+            )
+            +  geom_text(
+              data = fdcmydf , aes(
+                x = lon, y = lat , label = "", size = 3, vjust = 0, hjust = -2.5
+              )
+            ) + geom_point(
+              data = fdcmydf, aes(x = lon, y = lat),  alpha = 1 , col = "darkgreen" , size = 2 
+            )
+            + geom_point(
+              data = mydf, aes(x = lon, y = lat),  alpha = 1 , col = "red" , size = 5
             )
             +  geom_text(
               data = mydf , aes(
                 x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.5
               )
             )
-            +  ggtitle("Exchange Location in MSC Zone")
+           
+            +  ggtitle("MSC Zone - Red : Exchange , Blue : FDP , GREEN : FDC")
           )
           
         })
@@ -253,6 +308,14 @@ shinyServer(function(input, output, session) {
     {
       if (paste(input$user) != "ALL CUSTOMER" &
           paste(input$exchange) == "ALL EXCHANGE") {
+        
+        
+        #updateSelectInput(
+          #session, "user", choices = as.character(as.factor(df1$login_id)), selected =
+          #  as.character(as.factor("ALL CUSTOMER"))
+       # )
+        
+        
         print("masukkkk !!")
         
         output$selcustomer <- renderText({
@@ -339,7 +402,7 @@ shinyServer(function(input, output, session) {
                 
                 print(mydf)
                 cbj <-
-                  get_map(location = paste(str_replace(df3$zone , "ZONE", "")) , zoom = 12)
+                  get_map(location = paste(str_replace(df3$zone , "ZONE", "")) , zoom = 12 , maptype = "toner" , color = "bw")
                 renderPlot(ggmap(cbj) + geom_point(
                   data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
                 )+  geom_text(
@@ -350,6 +413,27 @@ shinyServer(function(input, output, session) {
               {
                 print("ada alamat")
                 print(as.character(df3$section_name))
+                
+                fdp <- read.csv("MSC_FDP_DATA.csv")
+                lon <- data.frame(fdp$LONG)
+                lat <- data.frame(fdp$LAT)
+                f <- data.frame(fdp$EXC_ABB)
+                g <- data.frame(fdp$FDC_CODE)
+                h <- data.frame(fdp$RADIAL_DIST_METER)
+                fdpmydf <- as.data.frame(cbind(lon,lat,f,g,h))
+                names(fdpmydf) = c("lon","lat","exc","fdc","d")
+                print(fdpmydf)
+                
+                
+                fdc <- read.csv("MSC_FDC_DATA.csv")
+                lon <- data.frame(fdc$LONG)
+                lat <- data.frame(fdc$LAT)
+                f <- data.frame(fdc$EXC_ABB)
+                g <- data.frame(fdc$FDC_CODE)
+                h <- data.frame(fdc$RADIAL_DIST_METER)
+                fdcmydf <- as.data.frame(cbind(lon,lat,f,g,h))
+                names(fdcmydf) = c("lon","lat","exc","fdc","d")
+                print(fdcmydf)
                 
                 gc <-
                   geocode(paste(df3$street_name, df3$section_name, df3$city_name), source = "google")
@@ -363,13 +447,32 @@ shinyServer(function(input, output, session) {
                 
                 print(mydf)
                 cbj <-
-                  get_map(location = paste(df3$section_name) , zoom = 12)
-                renderPlot(ggmap(cbj) + geom_point(
-                  data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
-                )+  ggtitle("Unifi Customer Location") +  geom_text(
-                                   data = mydf , aes(
-                                     x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.3
-                                   )))
+                  get_map(location = paste(df3$section_name) , zoom = 12 , maptype = "toner" , color = "bw")
+                renderPlot(ggmap(cbj) 
+                
+                +  geom_text(
+                  data = fdpmydf , aes(
+                    x = lon, y = lat , label = "", size = 3, vjust = 0, hjust = -2.5
+                  )
+                ) + geom_point(
+                  data = fdpmydf, aes(x = lon, y = lat),  alpha = 1 , col = "blue" , size = round(h*0.000621371)
+                )
+                +  geom_text(
+                  data = fdcmydf , aes(
+                    x = lon, y = lat , label = "", size = 3, vjust = 0, hjust = -2.5
+                  )
+                ) + geom_point(
+                  data = fdcmydf, aes(x = lon, y = lat),  alpha = 1 , col = "darkgreen" , size = round(h*0.000621371) 
+                )
+                
+                + geom_point(
+                  data = mydf, aes(x = lon, y = lat),  alpha = 1 , col = "red" , size = 5
+                )+  ggtitle("Unifi Customer - Red : Exchange , Blue : FDP , GREEN : FDC ") +  geom_text(
+                  data = mydf , aes(
+                    x = lon, y = lat , label = f, size = 3, vjust = 0, hjust = -0.3
+                  ))
+                
+                )
                   
                 
               }
@@ -425,7 +528,7 @@ shinyServer(function(input, output, session) {
           if (as.numeric(str_replace(df3$voice_score , "\\[1] ", ""))  > 0.0 &
               as.numeric(str_replace(df3$voice_score , "\\[1] ", ""))  < 0.67)  {
             output$vobbscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(as.numeric(
                 str_replace(df3$voice_score , "\\[1] ", "")
               ),2)),paste("</th>")
             ))
@@ -433,14 +536,14 @@ shinyServer(function(input, output, session) {
           } else if (as.numeric(str_replace(df3$voice_score , "\\[1] ", ""))  >= 0.67 &
                      as.numeric(str_replace(df3$voice_score , "\\[1] ", ""))  < 0.88)  {
             output$vobbscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(as.numeric(
                 str_replace(df3$voice_score , "\\[1] ", "")
               ),2)),paste("</th>")
             ))
             
           } else if (as.numeric(str_replace(df3$voice_score , "\\[1] ", ""))  >= 0.88)  {
             output$vobbscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(as.numeric(
                 str_replace(df3$voice_score , "\\[1] ", "")
               ),2)),paste("</th>")
             ))
@@ -449,7 +552,7 @@ shinyServer(function(input, output, session) {
           if (as.numeric(str_replace(df3$internet_score , "\\[1] ", ""))  > 0.0 &
               as.numeric(str_replace(df3$internet_score , "\\[1] ", ""))  < 0.67)  {
             output$hsiscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(as.numeric(
                 str_replace(df3$internet_score , "\\[1] ", "")
               ),2)),paste("</th>")
             ))
@@ -457,14 +560,14 @@ shinyServer(function(input, output, session) {
           } else if (as.numeric(str_replace(df3$internet_score , "\\[1] ", ""))  >= 0.67 &
                      as.numeric(str_replace(df3$internet_score , "\\[1] ", ""))  < 0.88)  {
             output$hsiscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(as.numeric(
                 str_replace(df3$internet_score , "\\[1] ", "")
               ),2)),paste("</th>")
             ))
             
           } else if (as.numeric(str_replace(df3$internet_score , "\\[1] ", ""))  >= 0.88)  {
             output$hsiscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(as.numeric(
                 str_replace(df3$internet_score , "\\[1] ", "")
               ),2)),paste("</th>")
             ))
@@ -473,7 +576,7 @@ shinyServer(function(input, output, session) {
           if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  > 0.0 &
               as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.67)  {
             output$iptvscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(
+              "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(
                 as.numeric(str_replace(df3$iptv_score , "\\[1] ", "")) / 5,2
               )),paste("</th>")
             ))
@@ -481,14 +584,14 @@ shinyServer(function(input, output, session) {
           } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.67 &
                      as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.88)  {
             output$iptvscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(
+              "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(
                 as.numeric(str_replace(df3$iptv_score , "\\[1] ", "")) / 5,2
               )),paste("</th>")
             ))
             
           } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.88)  {
             output$iptvscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(
+              "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(
                 as.numeric(str_replace(df3$iptv_score , "\\[1] ", "")) / 5,2
               )),paste("</th>")
             ))
@@ -509,7 +612,7 @@ shinyServer(function(input, output, session) {
           
           if (overallscore  > 0.0 & overallscore  < 0.67)  {
             output$overallscore = renderText(paste(
-              "<th bgcolor=red scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(as.numeric(
                 overallscore
               ),2)),paste("</th>")
             ))
@@ -517,14 +620,14 @@ shinyServer(function(input, output, session) {
           } else if (overallscore >= 0.67 &
                      overallscore  < 0.88)  {
             output$overallscore = renderText(paste(
-              "<th bgcolor=yellow scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(as.numeric(
                 overallscore
               ),2)),paste("</th>")
             ))
             
           } else if (overallscore  >= 0.88)  {
             output$overallscore = renderText(paste(
-              "<th bgcolor=green scope=row>",paste(round(as.numeric(
+              "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(as.numeric(
                 overallscore
               ),2)),paste("</th>")
             ))
@@ -545,6 +648,10 @@ shinyServer(function(input, output, session) {
       {
         if (paste(input$user) == "ALL CUSTOMER" &
             paste(input$exchange) != "ALL EXCHANGE") {
+          
+          
+       
+          
           output$cei_table = renderDataTable({
             df2 <-    read.csv("account.csv")
             df1 <-
@@ -570,7 +677,7 @@ shinyServer(function(input, output, session) {
             if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  > 0.0 &
                 as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  < 0.67)  {
               output$vobbscore = renderText(paste(
-                "<th bgcolor=red scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(
                   as.numeric(str_replace(
                     df3$vobb_score , "\\[1] ", ""
                   )),2
@@ -580,7 +687,7 @@ shinyServer(function(input, output, session) {
             } else if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  >= 0.67 &
                        as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  < 0.88)  {
               output$vobbscore = renderText(paste(
-                "<th bgcolor=yellow scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(
                   as.numeric(str_replace(
                     df3$vobb_score , "\\[1] ", ""
                   )),2
@@ -589,7 +696,7 @@ shinyServer(function(input, output, session) {
               
             } else if (as.numeric(str_replace(df3$vobb_score , "\\[1] ", ""))  >= 0.88)  {
               output$vobbscore = renderText(paste(
-                "<th bgcolor=green scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(
                   as.numeric(str_replace(
                     df3$vobb_score , "\\[1] ", ""
                   )),2
@@ -600,7 +707,7 @@ shinyServer(function(input, output, session) {
             if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  > 0.0 &
                 as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  < 0.67)  {
               output$hsiscore = renderText(paste(
-                "<th bgcolor=red scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(
                   as.numeric(str_replace(df3$hsi_score , "\\[1] ", "")),2
                 )),paste("</th>")
               ))
@@ -608,14 +715,14 @@ shinyServer(function(input, output, session) {
             } else if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  >= 0.67 &
                        as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  < 0.88)  {
               output$hsiscore = renderText(paste(
-                "<th bgcolor=yellow scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(
                   as.numeric(str_replace(df3$hsi_score , "\\[1] ", "")),2
                 )),paste("</th>")
               ))
               
             } else if (as.numeric(str_replace(df3$hsi_score , "\\[1] ", ""))  >= 0.88)  {
               output$hsiscore = renderText(paste(
-                "<th bgcolor=green scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(
                   as.numeric(str_replace(df3$hsi_score , "\\[1] ", "")),2
                 )),paste("</th>")
               ))
@@ -624,7 +731,7 @@ shinyServer(function(input, output, session) {
             if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  > 0.0 &
                 as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.67)  {
               output$iptvscore = renderText(paste(
-                "<th bgcolor=red scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(
                   as.numeric(str_replace(
                     df3$iptv_score , "\\[1] ", ""
                   )) / 5,2
@@ -634,7 +741,7 @@ shinyServer(function(input, output, session) {
             } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.67 &
                        as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  < 0.88)  {
               output$iptvscore = renderText(paste(
-                "<th bgcolor=yellow scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(
                   as.numeric(str_replace(
                     df3$iptv_score , "\\[1] ", ""
                   )) / 5,2
@@ -643,7 +750,7 @@ shinyServer(function(input, output, session) {
               
             } else if (as.numeric(str_replace(df3$iptv_score , "\\[1] ", ""))  >= 0.88)  {
               output$iptvscore = renderText(paste(
-                "<th bgcolor=green scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(
                   as.numeric(str_replace(
                     df3$iptv_score , "\\[1] ", ""
                   )) / 5,2
@@ -666,7 +773,7 @@ shinyServer(function(input, output, session) {
             
             if (overallscore  > 0.0 & overallscore  < 0.67)  {
               output$overallscore = renderText(paste(
-                "<th bgcolor=red scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=red scope=row>",paste(round(
                   as.numeric(overallscore),2
                 )),paste("</th>")
               ))
@@ -674,14 +781,14 @@ shinyServer(function(input, output, session) {
             } else if (overallscore >= 0.67 &
                        overallscore  < 0.88)  {
               output$overallscore = renderText(paste(
-                "<th bgcolor=yellow scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=#D9D900 scope=row>",paste(round(
                   as.numeric(overallscore),2
                 )),paste("</th>")
               ))
               
             } else if (overallscore  >= 0.88)  {
               output$overallscore = renderText(paste(
-                "<th bgcolor=green scope=row>",paste(round(
+                "<th style=\"color: white;\" bgcolor=green scope=row>",paste(round(
                   as.numeric(overallscore),2
                 )),paste("</th>")
               ))
@@ -710,6 +817,8 @@ shinyServer(function(input, output, session) {
               #print(lon)
               
               
+              # one person
+              
               lon <- data.frame(df3$long)
               lat <- data.frame(df3$lat)
               f <- data.frame(df3$exchange)
@@ -718,10 +827,10 @@ shinyServer(function(input, output, session) {
               cbj <-
                 get_map(location = c(
                   lon = mean(mydf$lon), lat = mean(mydf$lat)
-                ), zoom = 12)
+                ), zoom = 12 , maptype = "toner" , color = "bw")
               renderPlot(
                 ggmap(cbj) + geom_point(
-                  data = mydf, aes(x = lon, y = lat),  alpha = .5 , col = "red" , size = 5
+                  data = mydf, aes(x = lon, y = lat),  alpha = 1 , col = "red" , size = 5
                 )
                 +  geom_text(
                   data = mydf , aes(
@@ -739,6 +848,16 @@ shinyServer(function(input, output, session) {
           }, options = list(
             lengthMenu = c(5, 10, 15,20), pageLength = 5, bAutoWidth = TRUE ,scrollX = TRUE,scrolly = TRUE
           ))
+          
+        } else {
+          
+          print("peliks")
+          
+          updateSelectInput(
+            session, "exchange", choices = as.character(as.factor(agg$exchange)), selected =
+              as.character(as.factor("ALL EXCHANGE")) 
+            
+          )
           
         }
       }
